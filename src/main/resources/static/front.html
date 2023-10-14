@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        #container {
+            position: fixed;
+            top: 5%;
+            object-fit: contain;
+            max-width: 100px;
+            max-height: 400px;
+            text-align: center;
+
+        }
+
+        #imageDiv {
+
+            object-fit: contain;
+            background-size: cover;
+            max-width: 700px;
+            max-height: 300px;
+            border: 1px solid black;
+            margin-bottom: 10px;
+        }
+
+        #button {
+
+            margin-left: 700px;
+            width: 200px;
+            height: 50px;
+        }
+    </style>
+</head>
+<body>
+<div id="container">
+    <div id="imageDiv">
+        <!-- Initially, the div is empty -->
+
+    </div>
+
+
+</div>
+<button id="button">Load Image</button>
+<script>
+    const button = document.getElementById('button');
+    const imageDiv = document.getElementById('imageDiv');
+
+    button.addEventListener('click', () => {
+        // Call the endpoint to fetch the image
+        fetch('http://localhost:8080/randimage/image')
+            .then(response => response.blob())
+            .then(imageBlob => {
+                // Create an image element and set its source to the fetched image data
+                const imageElement = document.createElement('img');
+                const objectURL = URL.createObjectURL(imageBlob);
+                function revokeURL(){
+                    URL.revokeObjectURL(this.src);
+                }
+                console.log(objectURL)
+                imageElement.onload = revokeURL;
+                imageElement.src = objectURL
+
+                // Clear the existing content of the div
+                imageDiv.innerHTML = '';
+
+                // Append the new image element to the div
+                imageDiv.appendChild(imageElement);
+            });
+    });
+</script>
+</body>
+</html>
